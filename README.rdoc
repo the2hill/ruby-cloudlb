@@ -16,6 +16,10 @@ This source is available on Github[http://github.com/rackspace/ruby-cloudlb/] an
 To use it in Bundler, add the following statement to your Gemfile
 
   gem "cloudlb"
+  
+== API Documentation
+
+This binding attempts to conform to the latest API specifications. For current API documentation, visit http://docs.rackspacecloud.com/api/
 
 == Examples
 
