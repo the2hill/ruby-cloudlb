@@ -1,0 +1,58 @@
+= Rackspace Cloud Load Balancers
+
+== Description
+
+This is a Ruby interface into the Rackspace[http://rackspace.com/] {Cloud Load Balancers}[http://www.rackspace.com/cloud/blog/2011/02/24/rackspace-cloud-load-balancers-beta-now-available-for-all-cloud-customers/] service. Mission-critical web-based applications and workloads require high availability. Load balancing 
+distributes workloads across two or more servers, network links, and other resources to maximize 
+throughput, minimize response time and avoid overload. Rackspace Cloud Load Balancers allow you 
+to quickly load balance multiple Cloud Servers for optimal resource utilization.
+
+== Installation
+
+This source is available on Github[http://github.com/rackspace/ruby-loadbalancers/] and the gem is available on RubyGems[http://rubygems.org/].  To install it, do
+
+  sudo gem install cloud-loadbalancers
+  
+To use it in Bundler, add the following statement to your Gemfile
+
+  gem "cloud-loadbalancers"
+
+== Examples
+
+See the class definitions for documentation on specific methods and operations.
+
+  require 'rubygems'
+  require 'cloud-loadbalancers'
+
+  # Authenticate to the Rackspace Cloud, and choose to manage load balancers in the Dallas/Ft. Worth datacenter
+  lb = LoadBalancers::Connection.new(:username => "MY_USERNAME", :api_key => "MY_API_KEY", :region => :dfw)
+
+  # Show active load balancers
+  lb.list_load_balancers
+  => [
+    {:status=>"ACTIVE", :port=>80, :updated=>{:time=>"2011-02-25T03:14:49+0000"}, :created=>{:time=>"2010-12-02T20:30:49+0000"}, :protocol=>"HTTP", :algorithm=>"RANDOM", :virtualIps=>[{:type=>"PUBLIC", :id=>21, :ipVersion=>"IPV4", :address=>"174.143.139.1"}], :name=>"stage-rax-lb", :id=>1}, 
+    {:status=>"ACTIVE", :port=>80, :updated=>{:time=>"2011-02-25T15:31:16+0000"}, :created=>{:time=>"2011-02-25T01:11:31+0000"}, :protocol=>"HTTP", :algorithm=>"ROUND_ROBIN", :virtualIps=>[{:type=>"PUBLIC", :id=>38, :ipVersion=>"IPV4", :address=>"174.143.139.2"}], :name=>"Renamed LB", :id=>73}
+    ]
+    
+  # Select a load balancer
+  balancer = lb.get_load_balancer(1)
+  => #<LoadBalancers::Balancer:0x101d7ebf8 @status="ACTIVE", @port=80, @name="stage-rax-lb", ...>
+  
+  # Change the algorithm to round-robin
+  balancer.algorithm="ROUND_ROBIN"
+  => "ROUND_ROBIN"
+  
+  # Add a new node to the load balancer
+  node = balancer.create_node(:address => '192.168.0.1', :port => 80)
+  => #<LoadBalancers::Node:0x101d48c88 @status="ONLINE", @port=80, ...>
+  
+== Authors
+
+{H. Wade Minter}[https://github.com/minter/] <minter@lunenburg.org>
+
+== License
+
+See COPYING for license information.
+Copyright (c) 2011, Rackspace US, Inc.
+  
+  
