@@ -9,23 +9,23 @@ to quickly load balance multiple Cloud Servers for optimal resource utilization.
 
 == Installation
 
-This source is available on Github[http://github.com/rackspace/ruby-loadbalancers/] and the gem is available on RubyGems[http://rubygems.org/].  To install it, do
+This source is available on Github[http://github.com/rackspace/ruby-cloudlb/] and the gem is available on RubyGems[http://rubygems.org/].  To install it, do
 
-  sudo gem install cloud-loadbalancers
+  sudo gem install cloudlb
   
 To use it in Bundler, add the following statement to your Gemfile
 
-  gem "cloud-loadbalancers"
+  gem "cloudlb"
 
 == Examples
 
 See the class definitions for documentation on specific methods and operations.
 
   require 'rubygems'
-  require 'cloud-loadbalancers'
+  require 'cloudlb'
 
   # Authenticate to the Rackspace Cloud, and choose to manage load balancers in the Dallas/Ft. Worth datacenter
-  lb = LoadBalancers::Connection.new(:username => "MY_USERNAME", :api_key => "MY_API_KEY", :region => :dfw)
+  lb = CloudLB::Connection.new(:username => "MY_USERNAME", :api_key => "MY_API_KEY", :region => :dfw)
 
   # Show active load balancers
   lb.list_load_balancers
@@ -36,7 +36,7 @@ See the class definitions for documentation on specific methods and operations.
     
   # Select a load balancer
   balancer = lb.get_load_balancer(1)
-  => #<LoadBalancers::Balancer:0x101d7ebf8 @status="ACTIVE", @port=80, @name="stage-rax-lb", ...>
+  => #<CloudLB::Balancer:0x101d7ebf8 @status="ACTIVE", @port=80, @name="stage-rax-lb", ...>
   
   # Change the algorithm to round-robin
   balancer.algorithm="ROUND_ROBIN"
@@ -44,7 +44,7 @@ See the class definitions for documentation on specific methods and operations.
   
   # Add a new node to the load balancer
   node = balancer.create_node(:address => '192.168.0.1', :port => 80)
-  => #<LoadBalancers::Node:0x101d48c88 @status="ONLINE", @port=80, ...>
+  => #<CloudLB::Node:0x101d48c88 @status="ONLINE", @port=80, ...>
   
 == Authors
 

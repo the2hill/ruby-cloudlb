@@ -1,4 +1,4 @@
-module LoadBalancers
+module CloudLB
   class HealthMonitor
   
     attr_reader :type
@@ -9,7 +9,7 @@ module LoadBalancers
     attr_reader :status_regex
     attr_reader :body_regex
     
-    # Initializes a new LoadBalancers::ConnectionThrottle object
+    # Initializes a new CloudLB::ConnectionThrottle object
     def initialize(load_balancer)
       @connection    = load_balancer.connection
       @load_balancer = load_balancer
@@ -22,8 +22,8 @@ module LoadBalancers
     end
   
     def populate
-      response = @connection.lbreq("GET",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{LoadBalancers.escape(@load_balancer.id.to_s)}/healthmonitor",@lbmgmtport,@lbmgmtscheme)
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      response = @connection.lbreq("GET",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{CloudLB.escape(@load_balancer.id.to_s)}/healthmonitor",@lbmgmtport,@lbmgmtscheme)
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       data = JSON.parse(response.body)['healthMonitor']
       @enabled = data == {} ? false : true
       return nil unless @enabled
@@ -73,8 +73,8 @@ module LoadBalancers
         data['statusRegex'] = options[:status_regex] if options[:status_regex]
         data['bodyRegex'] = options[:body_regex] if options[:body_regex]
       end
-      response = @connection.lbreq("PUT",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{LoadBalancers.escape(@load_balancer.id.to_s)}/healthmonitor",@lbmgmtport,@lbmgmtscheme,{},data.to_json)
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      response = @connection.lbreq("PUT",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{CloudLB.escape(@load_balancer.id.to_s)}/healthmonitor",@lbmgmtport,@lbmgmtscheme,{},data.to_json)
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       populate
       true
     end
@@ -126,8 +126,8 @@ module LoadBalancers
     #     >> monitor.destroy!
     #     => true
     def destroy!
-      response = @connection.lbreq("DELETE",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{LoadBalancers.escape(@load_balancer.id.to_s)}/healthmonitor",@lbmgmtport,@lbmgmtscheme)
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      response = @connection.lbreq("DELETE",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{CloudLB.escape(@load_balancer.id.to_s)}/healthmonitor",@lbmgmtport,@lbmgmtscheme)
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       @enabled = false
       true
     end

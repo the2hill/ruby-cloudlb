@@ -1,4 +1,4 @@
-module LoadBalancers
+module CloudLB
   class Authentication
     
     # Performs an authentication to the Rackspace Cloud authorization servers.  Opens a new HTTP connection to the API server,
@@ -13,8 +13,8 @@ module LoadBalancers
         :headers => { "X-Auth-User" => connection.authuser, "X-Auth-Key" => connection.authkey },
         :disable_ssl_peer_verification => true,
         :verbose => ENV['LOADBALANCERS_VERBOSE'] ? true : false)
-      LoadBalancers.hydra.queue(request)
-      LoadBalancers.hydra.run
+      CloudLB.hydra.queue(request)
+      CloudLB.hydra.run
       response = request.response
       headers = response.headers_hash
       if (response.code.to_s == "204")
@@ -37,7 +37,7 @@ module LoadBalancers
         connection.authok = true
       else
         connection.authtoken = false
-        raise LoadBalancers::Exception::Authentication, "Authentication failed with response code #{response.code}"
+        raise CloudLB::Exception::Authentication, "Authentication failed with response code #{response.code}"
       end
     end
   end

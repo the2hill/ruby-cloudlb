@@ -1,21 +1,21 @@
 #!/usr/bin/env ruby
 # 
-# == Cloud Servers API
-# ==== Connects Ruby Applications to Rackspace's {Cloud Servers service}[http://www.rackspacecloud.com/cloud_hosting_products/servers]
-# By H. Wade Minter <minter@lunenburg.org> and Mike Mayo <mike.mayo@rackspace.com>
+# == Cloud Load Balancers API
+# ==== Connects Ruby Applications to Rackspace's {Cloud Load Balancers service}[http://www.rackspacecloud.com/cloud_hosting_products/servers]
+# By H. Wade Minter <minter@lunenburg.org>
 #
 # See COPYING for license information.
-# Copyright (c) 2009, Rackspace US, Inc.
+# Copyright (c) 2011, Rackspace US, Inc.
 # ----
 # 
 # === Documentation & Examples
 # To begin reviewing the available methods and examples, peruse the README.rodc file, or begin by looking at documentation for the 
-# CloudServers::Connection class.
+# CloudLB::Connection class.
 #
-# The CloudServers class is the base class.  Not much of note aside from housekeeping happens here.
-# To create a new CloudServers connection, use the CloudServers::Connection.new('user_name', 'api_key') method.
+# The CloudLB class is the base class.  Not much of note aside from housekeeping happens here.
+# To create a new CloudLB connection, use the CloudLB::Connection.new method.
 
-module LoadBalancers
+module CloudLB
   
   AUTH_USA = "https://auth.api.rackspacecloud.com/v1.0"
   AUTH_UK = "https://lon.auth.api.rackspacecloud.com/v1.0"
@@ -33,13 +33,13 @@ module LoadBalancers
   end
 
   $:.unshift(File.dirname(__FILE__))
-  require 'loadbalancers/exception'
-  require 'loadbalancers/authentication'
-  require 'loadbalancers/connection'
-  require 'loadbalancers/balancer'
-  require 'loadbalancers/node'
-  require 'loadbalancers/health_monitor'
-  require 'loadbalancers/connection_throttle'
+  require 'cloudlb/exception'
+  require 'cloudlb/authentication'
+  require 'cloudlb/connection'
+  require 'cloudlb/balancer'
+  require 'cloudlb/node'
+  require 'cloudlb/health_monitor'
+  require 'cloudlb/connection_throttle'
   
   # Helper method to recursively symbolize hash keys.
   def self.symbolize_keys(obj)

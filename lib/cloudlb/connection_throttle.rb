@@ -1,4 +1,4 @@
-module LoadBalancers
+module CloudLB
   class ConnectionThrottle
   
     attr_reader :min_connections
@@ -6,7 +6,7 @@ module LoadBalancers
     attr_reader :max_connection_rate
     attr_reader :rate_interval
     
-    # Initializes a new LoadBalancers::ConnectionThrottle object with the current values. If there is no connection 
+    # Initializes a new CloudLB::ConnectionThrottle object with the current values. If there is no connection 
     # throttle currently defined, the enabled? method returns false.
     def initialize(load_balancer)
       @connection    = load_balancer.connection
@@ -20,8 +20,8 @@ module LoadBalancers
     end
   
     def populate
-      response = @connection.lbreq("GET",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{LoadBalancers.escape(@load_balancer.id.to_s)}/connectionthrottle",@lbmgmtport,@lbmgmtscheme)
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      response = @connection.lbreq("GET",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{CloudLB.escape(@load_balancer.id.to_s)}/connectionthrottle",@lbmgmtport,@lbmgmtscheme)
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       data = JSON.parse(response.body)['connectionThrottle']
       @enabled = data == {} ? false : true
       return nil unless @enabled
@@ -57,8 +57,8 @@ module LoadBalancers
       data['maxConnectionRate'] = options[:max_connection_rate] if options[:max_connection_rate]
       data['rateInterval'] = options[:rate_interval] if options[:rate_interval]
       
-      response = @connection.lbreq("PUT",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{LoadBalancers.escape(@load_balancer.id.to_s)}/connectionthrottle",@lbmgmtport,@lbmgmtscheme,{},data.to_json)
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      response = @connection.lbreq("PUT",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{CloudLB.escape(@load_balancer.id.to_s)}/connectionthrottle",@lbmgmtport,@lbmgmtscheme,{},data.to_json)
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       populate
       true
     end
@@ -96,8 +96,8 @@ module LoadBalancers
     #     >> monitor.destroy!
     #     => true
     def destroy!
-      response = @connection.lbreq("DELETE",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{LoadBalancers.escape(@load_balancer.id.to_s)}/connectionthrottle",@lbmgmtport,@lbmgmtscheme)
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      response = @connection.lbreq("DELETE",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{CloudLB.escape(@load_balancer.id.to_s)}/connectionthrottle",@lbmgmtport,@lbmgmtscheme)
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       @enabled = false
       true
     end

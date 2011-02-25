@@ -1,4 +1,4 @@
-module LoadBalancers
+module CloudLB
   class Connection
     
     attr_reader   :authuser
@@ -12,7 +12,7 @@ module LoadBalancers
     attr_reader   :auth_url
     attr_reader   :region
     
-    # Creates a new LoadBalancers::Connection object.  Uses LoadBalancers::Authentication to perform the login for the connection.
+    # Creates a new CloudLB::Connection object.  Uses CloudLB::Authentication to perform the login for the connection.
     #
     # Setting the retry_auth option to false will cause an exception to be thrown if your authorization token expires.
     # Otherwise, it will attempt to reauthenticate.
@@ -28,17 +28,17 @@ module LoadBalancers
     #   :auth_url - The URL to use for authentication.  (defaults to Rackspace USA).
     #   :retry_auth - Whether to retry if your auth token expires (defaults to true)
     #
-    #   lb = LoadBalancers::Connection.new(:username => 'YOUR_USERNAME', :api_key => 'YOUR_API_KEY', :region => :dfw)
+    #   lb = CloudLB::Connection.new(:username => 'YOUR_USERNAME', :api_key => 'YOUR_API_KEY', :region => :dfw)
     def initialize(options = {:retry_auth => true}) 
-      @authuser = options[:username] || (raise LoadBalancers::Exception::Authentication, "Must supply a :username")
-      @authkey = options[:api_key] || (raise LoadBalancers::Exception::Authentication, "Must supply an :api_key")
-      @region = options[:region] || (raise LoadBalancers::Exception::Authentication, "Must supply a :region")
+      @authuser = options[:username] || (raise CloudLB::Exception::Authentication, "Must supply a :username")
+      @authkey = options[:api_key] || (raise CloudLB::Exception::Authentication, "Must supply an :api_key")
+      @region = options[:region] || (raise CloudLB::Exception::Authentication, "Must supply a :region")
       @retry_auth = options[:retry_auth]
-      @auth_url = options[:auth_url] || LoadBalancers::AUTH_USA
+      @auth_url = options[:auth_url] || CloudLB::AUTH_USA
       @snet = ENV['RACKSPACE_SERVICENET'] || options[:snet]
       @authok = false
       @http = {}
-      LoadBalancers::Authentication.new(self)
+      CloudLB::Authentication.new(self)
     end
     
     # Returns true if the authentication was successful and returns false otherwise.
@@ -64,17 +64,17 @@ module LoadBalancers
     #   * :virutalIps - Information about the Virtual IPs providing service to this load balancer.
     def list_load_balancers(options={})
       response = lbreq("GET",lbmgmthost,"#{lbmgmtpath}/loadbalancers",lbmgmtport,lbmgmtscheme)
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
-      balancers = LoadBalancers.symbolize_keys(JSON.parse(response.body)["loadBalancers"])
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      balancers = CloudLB.symbolize_keys(JSON.parse(response.body)["loadBalancers"])
       return options[:show_deleted] == true ? balancers : balancers.select{|lb| lb[:status] != "DELETED"}
     end
     alias :load_balancers :list_load_balancers
     
-    # Returns a LoadBalancers::Balancer object for the given load balancer ID number.
+    # Returns a CloudLB::Balancer object for the given load balancer ID number.
     #
     #    >> lb.get_load_balancer(2)
     def get_load_balancer(id)
-      LoadBalancers::Balancer.new(self,id)
+      CloudLB::Balancer.new(self,id)
     end
     
     # Creates a brand new load balancer under your account.
@@ -99,10 +99,10 @@ module LoadBalancers
     #                     want to obtain.  Values are "PUBLIC" or "PRIVATE".
     def create_load_balancer(options = {})
       body = Hash.new
-      body[:name] = options[:name] or raise LoadBalancers::Exception::MissingArgument, "Must provide a name to create a load balancer"
-      (raise LoadBalancers::Exception::Syntax, "Load balancer name must be 128 characters or less") if options[:name].size > 128
-      (raise LoadBalancers::Exception::Syntax, "Must provide at least one node in the :nodes array") if (!options[:nodes].is_a?(Array) || options[:nodes].size < 1)
-      body[:protocol] = options[:protocol] or raise LoadBalancers::Exception::MissingArgument, "Must provide a protocol to create a load balancer"
+      body[:name] = options[:name] or raise CloudLB::Exception::MissingArgument, "Must provide a name to create a load balancer"
+      (raise CloudLB::Exception::Syntax, "Load balancer name must be 128 characters or less") if options[:name].size > 128
+      (raise CloudLB::Exception::Syntax, "Must provide at least one node in the :nodes array") if (!options[:nodes].is_a?(Array) || options[:nodes].size < 1)
+      body[:protocol] = options[:protocol] or raise CloudLB::Exception::MissingArgument, "Must provide a protocol to create a load balancer"
       body[:port] = options[:port] if options[:port]
       body[:nodes] = options[:nodes]
       body[:protocol].upcase! if body[:protocol]
@@ -113,7 +113,7 @@ module LoadBalancers
         body['virtualIps'] = [{:type => options[:virtual_ip_type]}]
       end
       response = lbreq("POST",lbmgmthost,"#{lbmgmtpath}/loadbalancers",lbmgmtport,lbmgmtscheme,{},body.to_json)
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       body = JSON.parse(response.body)['loadBalancer']
       return get_load_balancer(body["id"])
     end
@@ -124,8 +124,8 @@ module LoadBalancers
     #   => [{:port=>21, :name=>"FTP"}, {:port=>80, :name=>"HTTP"}, {:port=>443, :name=>"HTTPS"}, {:port=>993, :name=>"IMAPS"}, {:port=>143, :name=>"IMAPv4"}, {:port=>389, :name=>"LDAP"}, {:port=>636, :name=>"LDAPS"}, {:port=>110, :name=>"POP3"}, {:port=>995, :name=>"POP3S"}, {:port=>25, :name=>"SMTP"}]
     def get_protocols
       response = lbreq("GET",lbmgmthost,"#{lbmgmtpath}/loadbalancers/protocols",lbmgmtport,lbmgmtscheme,{})
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
-      LoadBalancers.symbolize_keys(JSON.parse(response.body)["protocols"])    
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      CloudLB.symbolize_keys(JSON.parse(response.body)["protocols"])    
     end
     
     # Returns a list of balancer algorithms that are currently supported by the Cloud Load Balancer product.
@@ -134,8 +134,8 @@ module LoadBalancers
     #   => [{:name=>"LEAST_CONNECTIONS"}, {:name=>"RANDOM"}, {:name=>"ROUND_ROBIN"}, {:name=>"WEIGHTED_LEAST_CONNECTIONS"}, {:name=>"WEIGHTED_ROUND_ROBIN"}]
     def get_algorithms
       response = lbreq("GET",lbmgmthost,"#{lbmgmtpath}/loadbalancers/algorithms",lbmgmtport,lbmgmtscheme,{})
-      LoadBalancers::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
-      LoadBalancers.symbolize_keys(JSON.parse(response.body)["algorithms"])    
+      CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
+      CloudLB.symbolize_keys(JSON.parse(response.body)["algorithms"])    
     end      
     
     
@@ -157,25 +157,25 @@ module LoadBalancers
                                       :body          => data,
                                       :method        => method.downcase.to_sym,
                                       :headers       => hdrhash,
-                                      # :user_agent    => "LoadBalancers Ruby API #{VERSION}",
+                                      # :user_agent    => "CloudLB Ruby API #{VERSION}",
                                       :verbose       => ENV['LOADBALANCERS_VERBOSE'] ? true : false)
-      LoadBalancers.hydra.queue(request)
-      LoadBalancers.hydra.run
+      CloudLB.hydra.queue(request)
+      CloudLB.hydra.run
       
       response = request.response
       print "DEBUG: Body is #{response.body}\n" if ENV['LOADBALANCERS_VERBOSE']
-      raise LoadBalancers::Exception::ExpiredAuthToken if response.code.to_s == "401"
+      raise CloudLB::Exception::ExpiredAuthToken if response.code.to_s == "401"
       response
     rescue Errno::EPIPE, Errno::EINVAL, EOFError
       # Server closed the connection, retry
-      raise LoadBalancers::Exception::Connection, "Unable to reconnect to #{server} after #{attempts} attempts" if attempts >= 5
+      raise CloudLB::Exception::Connection, "Unable to reconnect to #{server} after #{attempts} attempts" if attempts >= 5
       attempts += 1
       @http[server].finish if @http[server].started?
       start_http(server,path,port,scheme,headers)
       retry
-    rescue LoadBalancers::Exception::ExpiredAuthToken
-      raise LoadBalancers::Exception::Connection, "Authentication token expired and you have requested not to retry" if @retry_auth == false
-      LoadBalancers::Authentication.new(self)
+    rescue CloudLB::Exception::ExpiredAuthToken
+      raise CloudLB::Exception::Connection, "Authentication token expired and you have requested not to retry" if @retry_auth == false
+      CloudLB::Authentication.new(self)
       retry
     end
     

@@ -1,7 +1,7 @@
-module LoadBalancers
+module CloudLB
   class Exception
 
-    class LoadBalancersError < StandardError
+    class CloudLBError < StandardError
 
       attr_reader :response_body
       attr_reader :response_code
@@ -14,17 +14,17 @@ module LoadBalancers
 
     end
     
-    class LoadBalancerFault           < LoadBalancersError # :nodoc:
+    class LoadBalancerFault           < CloudLBError # :nodoc:
     end
-    class ServiceUnavailable          < LoadBalancersError # :nodoc:
+    class ServiceUnavailable          < CloudLBError # :nodoc:
     end
-    class Unauthorized                < LoadBalancersError # :nodoc:
+    class Unauthorized                < CloudLBError # :nodoc:
     end
-    class BadRequest                  < LoadBalancersError # :nodoc:
+    class BadRequest                  < CloudLBError # :nodoc:
     end
-    class OverLimit                   < LoadBalancersError # :nodoc:
+    class OverLimit                   < CloudLBError # :nodoc:
     end
-    class Other                       < LoadBalancersError # :nodoc:
+    class Other                       < CloudLBError # :nodoc:
     end
     
     # Plus some others that we define here
@@ -43,7 +43,7 @@ module LoadBalancers
         
     # In the event of a non-200 HTTP status code, this method takes the HTTP response, parses
     # the JSON from the body to get more information about the exception, then raises the
-    # proper error.  Note that all exceptions are scoped in the LoadBalancers::Exception namespace.
+    # proper error.  Note that all exceptions are scoped in the CloudLB::Exception namespace.
     def self.raise_exception(response)
       return if response.code =~ /^20.$/
       begin
@@ -56,7 +56,7 @@ module LoadBalancers
         exception_class = self.const_get(fault[0,1].capitalize+fault[1,fault.length])
         raise exception_class.new(info["message"], response.code, response.body)
       rescue NameError, JSON::ParserError
-        raise LoadBalancers::Exception::Other.new("The server returned status #{response.code} with body #{response.body}", response.code, response.body)
+        raise CloudLB::Exception::Other.new("The server returned status #{response.code} with body #{response.body}", response.code, response.body)
       end
     end
     
