@@ -17,6 +17,10 @@ To use it in Bundler, add the following statement to your Gemfile
 
   gem "cloudlb"
   
+== RDOC Documentation
+
+Find the latest RDoc documentation for this library at http://rdoc.info/github/rackspace/ruby-cloudlb/master/frames
+
 == API Documentation
 
 This binding attempts to conform to the latest API specifications. For current API documentation, visit http://docs.rackspacecloud.com/api/
