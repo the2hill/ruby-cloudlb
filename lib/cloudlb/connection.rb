@@ -76,6 +76,7 @@ module CloudLB
     def get_load_balancer(id)
       CloudLB::Balancer.new(self,id)
     end
+    alias :load_balancer :get_load_balancer
     
     # Creates a brand new load balancer under your account.
     #
@@ -120,24 +121,25 @@ module CloudLB
     
     # Returns a list of protocols that are currently supported by the Cloud Load Balancer product.
     #
-    #   >> lb.get_protocols
+    #   >> lb.list_protocols
     #   => [{:port=>21, :name=>"FTP"}, {:port=>80, :name=>"HTTP"}, {:port=>443, :name=>"HTTPS"}, {:port=>993, :name=>"IMAPS"}, {:port=>143, :name=>"IMAPv4"}, {:port=>389, :name=>"LDAP"}, {:port=>636, :name=>"LDAPS"}, {:port=>110, :name=>"POP3"}, {:port=>995, :name=>"POP3S"}, {:port=>25, :name=>"SMTP"}]
-    def get_protocols
+    def list_protocols
       response = lbreq("GET",lbmgmthost,"#{lbmgmtpath}/loadbalancers/protocols",lbmgmtport,lbmgmtscheme,{})
       CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       CloudLB.symbolize_keys(JSON.parse(response.body)["protocols"])    
     end
+    alias :protocols, :list_protocols
     
     # Returns a list of balancer algorithms that are currently supported by the Cloud Load Balancer product.
     #
-    #   >> lb.get_algorithms
+    #   >> lb.list_algorithms
     #   => [{:name=>"LEAST_CONNECTIONS"}, {:name=>"RANDOM"}, {:name=>"ROUND_ROBIN"}, {:name=>"WEIGHTED_LEAST_CONNECTIONS"}, {:name=>"WEIGHTED_ROUND_ROBIN"}]
-    def get_algorithms
+    def list_algorithms
       response = lbreq("GET",lbmgmthost,"#{lbmgmtpath}/loadbalancers/algorithms",lbmgmtport,lbmgmtscheme,{})
       CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       CloudLB.symbolize_keys(JSON.parse(response.body)["algorithms"])    
     end      
-    
+    alias :algorithms, :list_algorithms
     
     
     # This method actually makes the HTTP REST calls out to the server. Relies on the thread-safe typhoeus

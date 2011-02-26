@@ -47,6 +47,7 @@ module CloudLB
       CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       CloudLB.symbolize_keys(JSON.parse(response.body)["virtualIps"])
     end
+    alias :virtual_ips :list_virtual_ips
     
     # Lists the backend nodes that this Balancer sends traffic to.
     #
@@ -57,11 +58,13 @@ module CloudLB
       CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       CloudLB.symbolize_keys(JSON.parse(response.body)["nodes"])
     end
+    alias :nodes :list_nodes
     
     # Returns a CloudLB::Node object for the given node id.
     def get_node(id)
       CloudLB::Node.new(self,id)
     end
+    alias :node :get_node
     
     # Creates a brand new backend node and associates it with the current load balancer.  Returns the new Node object.
     #
@@ -158,6 +161,7 @@ module CloudLB
     end
     
     # Allows toggling of HTTP cookie session persistence.  Valid values are true and false to enable or disable, respectively.
+    # FIXME - Trying to set the persistence to true is currently returning an undocumented 405 error.
     def session_persistence=(value)
       (raise CloudLB::Exception::MissingArgument, "value must be true or false") unless [true,false].include?(value)
       if value == true
@@ -176,6 +180,7 @@ module CloudLB
       CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       JSON.parse(response.body)["accessList"]
     end
+    alias :access_list :list_access_list
     
     # FIXME: Does not work (JSON error)
     def add_to_access_list(options={})
@@ -207,10 +212,12 @@ module CloudLB
     def get_health_monitor
       CloudLB::HealthMonitor.new(self)
     end
+    alias :health_monitor :get_health_monitor
     
     def get_connection_throttle
       CloudLB::ConnectionThrottle.new(self)
     end
+    alias :connection_throttle :get_connection_throttle
     
     private
     
