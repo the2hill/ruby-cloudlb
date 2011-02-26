@@ -14,6 +14,8 @@ module CloudLB
 
     end
     
+    class ServiceFault                < CloudLBError # :nodoc:
+    end
     class LoadBalancerFault           < CloudLBError # :nodoc:
     end
     class ServiceUnavailable          < CloudLBError # :nodoc:
@@ -22,7 +24,15 @@ module CloudLB
     end
     class BadRequest                  < CloudLBError # :nodoc:
     end
+    class ItemNotFound                < CloudLBError # :nodoc:
+    end
     class OverLimit                   < CloudLBError # :nodoc:
+    end
+    class OutOfVirtualIps             < CloudLBError # :nodoc:
+    end
+    class ImmutableEntity             < CloudLBError # :nodoc:
+    end
+    class UnprocessableEntity         < CloudLBError # :nodoc:
     end
     class Other                       < CloudLBError # :nodoc:
     end
