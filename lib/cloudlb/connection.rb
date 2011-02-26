@@ -80,7 +80,7 @@ module CloudLB
     
     # Creates a brand new load balancer under your account.
     #
-    # A minimal request must pass in :name, :protocol, :nodes, and either :virtual_ip_ids or :virtual_ip_types.
+    # A minimal request must pass in :name, :protocol, :port, :nodes, and either :virtual_ip_ids or :virtual_ip_types.
     #
     # Options:
     # :name - the name of the load balancer.  Limted to 128 characters or less.
@@ -90,7 +90,7 @@ module CloudLB
     #          the port on the target server, and the condition ("ENABLED", "DISABLED", "DRAINING"). Optionally supply a :weight for use
     #          in the WEIGHTED_ algorithms.
     #          {:address => "1.2.3.4", :port => "80", :condition => "ENABLED", :weight => 1}
-    # :port - the port that the load balancer listens on. Defaults to the standard port for the protocol.
+    # :port - the port that the load balancer listens on. *required*
     # :algorithm - A valid balancing algorithm.  Use the algorithms method to get the list. Valid in the current documentation
     #              are RANDOM (default), LEAST_CONNECTIONS, ROUND_ROBIN, WEIGHTED_LEAST_CONNECTIONS, WEIGHTED_ROUND_ROBIN
     # :virtual_ip_id -  If you have existing virtual IPs and would like to reuse them in a different balancer (for example, to
