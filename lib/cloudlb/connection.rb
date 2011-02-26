@@ -128,7 +128,7 @@ module CloudLB
       CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       CloudLB.symbolize_keys(JSON.parse(response.body)["protocols"])    
     end
-    alias :protocols, :list_protocols
+    alias :protocols :list_protocols
     
     # Returns a list of balancer algorithms that are currently supported by the Cloud Load Balancer product.
     #
@@ -139,7 +139,7 @@ module CloudLB
       CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       CloudLB.symbolize_keys(JSON.parse(response.body)["algorithms"])    
     end      
-    alias :algorithms, :list_algorithms
+    alias :algorithms :list_algorithms
     
     
     # This method actually makes the HTTP REST calls out to the server. Relies on the thread-safe typhoeus

@@ -6,7 +6,7 @@ require 'cloudlb'
  
 Gem::Specification.new do |s|
   s.name        = "cloudlb"
-  s.version     = LoadBalancers::VERSION
+  s.version     = CloudLB::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["H. Wade Minter"]
   s.email       = ["minter@lunenburg.org"]
