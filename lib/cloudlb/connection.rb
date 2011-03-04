@@ -104,10 +104,10 @@ module CloudLB
       (raise CloudLB::Exception::Syntax, "Load balancer name must be 128 characters or less") if options[:name].size > 128
       (raise CloudLB::Exception::Syntax, "Must provide at least one node in the :nodes array") if (!options[:nodes].is_a?(Array) || options[:nodes].size < 1)
       body[:protocol] = options[:protocol] or raise CloudLB::Exception::MissingArgument, "Must provide a protocol to create a load balancer"
+      body[:protocol].upcase! if body[:protocol]
       body[:port] = options[:port] if options[:port]
       body[:nodes] = options[:nodes]
-      body[:protocol].upcase! if body[:protocol]
-      body[:algorithm].upcase! if body[:algorithm]
+      body[:algorithm] = options[:algorithm].upcase if options[:algorithm]
       if options[:virtual_ip_id]
         body['virtualIps'] = [{:id => options[:virtual_ip_id]}]
       elsif options[:virtual_ip_type]
