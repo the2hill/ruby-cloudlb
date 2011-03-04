@@ -32,7 +32,7 @@ module CloudLB
       @protocol              = data["protocol"]
       @port                  = data["port"]
       @algorithm             = data["algorithm"]
-      @connection_logging    = data["connectionLogging"]
+      @connection_logging    = data["connectionLogging"]["enabled"]
       @status                = data["status"]
       true
     end
