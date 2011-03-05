@@ -159,7 +159,7 @@ module CloudLB
                                       :body          => data,
                                       :method        => method.downcase.to_sym,
                                       :headers       => hdrhash,
-                                      # :user_agent    => "CloudLB Ruby API #{VERSION}",
+                                      :user_agent    => "Cloud Load Balancers Ruby API #{VERSION}",
                                       :verbose       => ENV['LOADBALANCERS_VERBOSE'] ? true : false)
       CloudLB.hydra.queue(request)
       CloudLB.hydra.run

@@ -9,10 +9,11 @@ module CloudLB
     # Should probably never be called directly.
     def initialize(connection)
       request = Typhoeus::Request.new(connection.auth_url,
-        :method => :get,
-        :headers => { "X-Auth-User" => connection.authuser, "X-Auth-Key" => connection.authkey },
+        :method                        => :get,
+        :headers                       => { "X-Auth-User" => connection.authuser, "X-Auth-Key" => connection.authkey },
+        :user_agent                    => "Cloud Load Balancers Ruby API #{VERSION}",
         :disable_ssl_peer_verification => true,
-        :verbose => ENV['LOADBALANCERS_VERBOSE'] ? true : false)
+        :verbose                       => ENV['LOADBALANCERS_VERBOSE'] ? true : false)
       CloudLB.hydra.queue(request)
       CloudLB.hydra.run
       response = request.response
