@@ -182,10 +182,16 @@ module CloudLB
     end
     alias :access_list :list_access_list
     
-    # FIXME: Does not work (JSON error)
+    # Adds an entry to your access list. You must supply the :address (an IP address) and :type (either ALLOW or DENY). 
+    # Items that are configured with the ALLOW type will always take precedence over items with the DENY type.
+    # 
+    #     >> balancer.add_to_access_list(:address => '192.168.5.99', :type => 'DENY')
+    #     => true
+    #     >> b.list_access_list
+    #     => [{"address"=>"192.168.5.99", "id"=>96, "type"=>"DENY"}]
     def add_to_access_list(options={})
       (raise CloudLB::Exception::MissingArgument, "Must supply address and type") unless (options[:address] && options[:type])
-      body = {'networkItems' => [ { :address => options[:address], :type => options[:type].upcase}]}.to_json
+      body = {'accessList' => [ { :address => options[:address], :type => options[:type].upcase}]}.to_json
       response = @connection.lbreq("POST",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{CloudLB.escape(@id.to_s)}/accesslist",@lbmgmtport,@lbmgmtscheme,{},body)
       CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
       true
@@ -202,7 +208,10 @@ module CloudLB
       true
     end
     
-    # TODO
+    # Deletes one member of the access list by id.
+    #
+    #    >> balancer.delete_access_list_member(95)
+    #    => true
     def delete_access_list_member(id)
       response = @connection.lbreq("DELETE",@lbmgmthost,"#{@lbmgmtpath}/loadbalancers/#{CloudLB.escape(@id.to_s)}/accesslist/#{CloudLB.escape(id.to_s)}",@lbmgmtport,@lbmgmtscheme,{})
       CloudLB::Exception.raise_exception(response) unless response.code.to_s.match(/^20.$/)
