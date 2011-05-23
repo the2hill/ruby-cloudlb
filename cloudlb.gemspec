@@ -2,11 +2,9 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
  
-require 'cloudlb'
- 
 Gem::Specification.new do |s|
   s.name        = "cloudlb"
-  s.version     = CloudLB::VERSION
+  s.version     = '0.0.1'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["H. Wade Minter"]
   s.email       = ["minter@lunenburg.org"]
