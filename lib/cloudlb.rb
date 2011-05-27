@@ -20,7 +20,6 @@ module CloudLB
   AUTH_USA = "https://auth.api.rackspacecloud.com/v1.0"
   AUTH_UK = "https://lon.auth.api.rackspacecloud.com/v1.0"
 
-  VERSION = IO.read(File.dirname(__FILE__) + '/../VERSION').chomp
   require 'uri'
   require 'rubygems'
   require 'json'
@@ -33,6 +32,7 @@ module CloudLB
   end
 
   $:.unshift(File.dirname(__FILE__))
+  require 'cloudlb/version'
   require 'cloudlb/exception'
   require 'cloudlb/authentication'
   require 'cloudlb/connection'

@@ -1,10 +1,12 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
+
+require 'lib/cloudlb/version'
  
 Gem::Specification.new do |s|
   s.name        = "cloudlb"
-  s.version     = '0.0.1'
+  s.version     = CloudLB::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["H. Wade Minter"]
   s.email       = ["minter@lunenburg.org"]
@@ -18,7 +20,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "json"
  
   s.files = [
-    "VERSION",
     "COPYING",
     ".gitignore",
     "README.rdoc",
@@ -30,7 +31,8 @@ Gem::Specification.new do |s|
     "lib/cloudlb/exception.rb",
     "lib/cloudlb/node.rb",
     "lib/cloudlb/health_monitor.rb",
-    "lib/cloudlb/connection_throttle.rb"
+    "lib/cloudlb/connection_throttle.rb",
+    "lib/cloudlb/version.rb"
   ]
   s.require_path = 'lib'
 end
